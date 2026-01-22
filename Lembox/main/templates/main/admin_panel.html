@@ -1,0 +1,72 @@
+{% extends 'main/dad.html' %}
+{% load static %}
+
+{% block body %}
+<div>
+
+    {% if to_buy %}
+        <div class="canvas">
+            <div class="messages">
+                <div class="product-filters">
+                    <h3 class="filters-title">Фільтри:</h3>
+                    <div class="filters-container">
+                        <label class="filter-checkbox">
+                            <input type="checkbox" id="input_close" class="filter-input"checked>
+                            <span class="filter-label">закрити</span>
+                        </label>
+                        <label class="filter-checkbox">
+                            <input type="checkbox" id="input_open" class="filter-input" checked>
+                            <span class="filter-label">відкриті</span>
+                        </label>
+                    </div>
+                    
+                </div>
+                {% for to_buy_item in to_buy %}
+    <div class="admin_panel_info"
+        data-status="{% if to_buy_item.status %}open{% else %}close{% endif %}">
+
+        <div class="alert-info">
+            <strong>Замовлення №{{ to_buy_item.id }}</strong><br>
+            {{ to_buy_item }}<br>
+
+            <button class="toggle-btn" onclick="toggleDetails(this)">
+                Показати деталі
+            </button>
+
+            <div class="dont_see_it">
+                Назва : {{ to_buy_item.name }}<br>
+                status : {{ to_buy_item.status }}<br>
+                phone : {{ to_buy_item.phone }}<br>
+                email : {{ to_buy_item.email }}<br>
+                total_price : {{ to_buy_item.total_price }}<br>
+                created_at : {{ to_buy_item.created_at }}<br>
+            </div>
+        </div>
+
+        {% for to_buy_product in to_buy_products %}
+            {% if to_buy_product.to_buy.id == to_buy_item.id %}
+            <div>
+                назва - {{ to_buy_product.name }}<br>
+                кількість - {{ to_buy_product.number }}<br>
+                ціна - {{ to_buy_product.price }}<br>
+            </div>
+            {% endif %}
+        {% endfor %}
+
+        <div class="button_all">
+            <button class="delete_button">Видалити</button>
+            <button class="close_button"
+                    onclick="closeOrder(this)"
+                    data-order-id="{{ to_buy_item.id }}">
+                Закрити замовлення
+            </button>
+        </div>
+
+    </div>
+    {% endfor %}
+
+            </div>
+        {% endif %}
+    </div>
+
+{% endblock %}

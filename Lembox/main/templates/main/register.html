@@ -1,0 +1,22 @@
+{% extends 'main/dad.html'%}
+
+{%block body%}
+<div class="blurred_center3">
+    <h2>реєстрація</h2>
+    <form method="post">
+        {% csrf_token %}
+            <div class="form-group_login">
+                {{ form.username.label_tag }}
+                {{ form.username }}
+            
+                {{ form.password1.label_tag }}
+                {{ form.password1 }}
+
+                {{ form.password2.label_tag }}
+                {{ form.password2 }}
+            </div>
+        <button type="submit" class="button_list">Увійти</button>
+    </form>
+
+</div>
+{%endblock%}

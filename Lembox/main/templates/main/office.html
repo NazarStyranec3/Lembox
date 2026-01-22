@@ -1,0 +1,104 @@
+{% extends 'main/dad.html'%}
+
+{%block body%}
+<div class="blurred center3">
+    {% csrf_token %}
+    <div>
+        <h3>мої замовлення</h3>
+
+        {% if to_buy_list %}
+            {% for order in to_buy_list %}
+                <div class="order-box">
+                    <strong>Замовлення №{{ order.id }}</strong><br>
+                    Імʼя: {{ order.name }}<br>
+                    Статус:
+                    {% if order.status %}
+                        <span style="color:green">Відкрите</span>
+                    {% else %}
+                        <span style="color:red">Закрите</span>
+                    {% endif %}
+                    <br>
+                    Сума: {{ order.total_price }} грн<br>
+                    Дата: {{ order.created_at|date:"d.m.Y H:i" }}
+                </div>
+                <hr>
+            {% endfor %}
+        {% else %}
+            <p>У вас ще немає замовлень</p>
+        {% endif %}
+       
+    </div>
+    <div class="order-form-section">
+        <h3>дані для доставки</h3>
+        <form method="POST" class="order-form">
+            
+            <div class="form-group">
+                <label for="id_name">Ваше ім'я:</label>
+                {{ form.name }}
+            </div>
+            <div class="form-group">
+                <label for="id_phone">Ваш Телефон:</label>
+                {{ form.phone }}
+            </div>
+            <div class="form-group">
+                <label for="id_email">Email:</label>
+                {{ form.email }}
+            </div>
+            <div class="form-group">
+                <label for="delivery_method">Спосіб доставки:</label>
+                <select id="delivery_method" name="delivery_method" class="delivery-method-input">
+                    <option value="" selected disabled>Оберіть спосіб доставки</option>
+                    <option value="novaposhta">Нова Пошта</option>
+                    <option value="ukrposhta">Укрпошта</option>
+                </select>
+            </div>
+            <div id="nova-poshta-fields" style="display: none;">
+                <div class="form-group">
+                    <label for="id_address_nova_poshta">Адреса:</label>
+                    {{ form.address_nova_poshta }}
+                </div>
+                <div class="form-group">
+                    <label for="id_city_nova_poshta">Місто:</label>
+                    {{ form.city_nova_poshta }}
+                </div>
+            
+                <div class="form-group">
+                    <label for="id_region_nova_poshta">Область:</label>
+                    {{ form.region_nova_poshta }}
+                </div>
+            
+                <div class="form-group">
+                    <label for="id_branch_nova_poshta">Відділення:</label>
+                    {{ form.branch_nova_poshta }}
+                </div>
+            
+            </div>
+
+            <div id="uke-poshta-fields" style="display: none;">
+                <div class="form-group">
+                    <label for="id_city_ukr_poshta">Місто:</label>
+                    {{ form.city_ukr_poshta }}
+                </div>
+            
+                <div class="form-group">
+                    <label for="id_region_ukr_poshta">Область:</label>
+                    {{ form.region_ukr_poshta }}
+                </div>
+            
+                <div class="form-group">
+                    <label for="id_inbex_ukr_poshta">Індекс:</label>
+                    {{ form.inbex_ukr_poshta }}
+                </div>
+
+                <div class="form-group">
+                    <label for="id_address_ukr_poshta">Адреса:</label>
+                    {{ form.address_ukr_poshta }}
+                </div>
+            </div>
+            
+            <button type="submit" class="btn-buy">зберегти</button>
+        </form>
+    </div>
+
+</div>
+{%endblock%}

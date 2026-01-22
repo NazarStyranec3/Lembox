@@ -1,0 +1,76 @@
+{% extends 'main/dad.html' %}
+{% load static %}
+
+{% block body %}
+
+<div class="product-detail">
+    <form method="post" enctype="multipart/form-data" class="product-form">
+    {% csrf_token %}
+    
+    <div class="swiper mySwiper" style="width: 600px; height: 700px; margin-bottom: 20px;">
+        <div class="swiper-wrapper">
+            
+            <div class="swiper-slide">
+                <div class="image-upload">
+                    <label for="id_image" class="image-preview">
+                        {% if form.instance.image %}
+                            <img src="{{ form.instance.image.url }}" id="preview_image">
+                        {% else %}
+                            <span id="span_image">+</span>
+                            <img id="preview_image" style="display:none;">
+                        {% endif %}
+                    </label>
+                    <div style="display: none;">{{ form.image }}</div>
+                </div>
+            </div>
+
+            <div class="swiper-slide">
+                <div class="image-upload">
+                    <label for="id_image_1" class="image-preview">
+                        {% if form.instance.image_1 %}
+                            <img src="{{ form.instance.image_1.url }}" id="preview_image_1">
+                        {% else %}
+                            <span id="span_image_1">+</span>
+                            <img id="preview_image_1" style="display:none;">
+                        {% endif %}
+                    </label>
+                    <div style="display: none;">{{ form.image_1 }}</div>
+                </div>
+            </div>
+
+            <div class="swiper-slide">
+                <div class="image-upload">
+                    <label for="id_image_2" class="image-preview">
+                        {% if form.instance.image_2 %}
+                            <img src="{{ form.instance.image_2.url }}" id="preview_image_2">
+                        {% else %}
+                            <span id="span_image_2">+</span>
+                            <img id="preview_image_2" style="display:none;">
+                        {% endif %}
+                    </label>
+                    <div style="display: none;">{{ form.image_2 }}</div>
+                </div>
+            </div>
+
+        </div>
+        <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-pagination"></div>
+    </div>
+
+    <div class="product-info">
+        <div class="product-edit">{{ form.category }}</div>
+        <div class="product-edit">{{ form.name }}</div>
+        <div class="product-edit">{{ form.description }}</div>
+        <div class="product-edit">{{ form.price }} ₴</div>
+        <button type="submit" class="button_sa">Зберегти</button>
+    </div>
+
+</form>
+</div>
+
+
+{% endblock %}
+
+
+    

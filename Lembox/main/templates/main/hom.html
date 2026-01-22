@@ -1,0 +1,49 @@
+{% extends 'main/dad.html' %}
+{% block body %}
+<div class="all_content">
+
+{% if products %}
+    <div class="product-filters">
+        <h3 class="filters-title">Фільтри товарів:</h3>
+        <div class="filters-container">
+            <label class="filter-checkbox">
+                <input type="checkbox" id="filter-for-dad" class="filter-input">
+                <span class="filter-label">Для тата</span>
+            </label>
+            <label class="filter-checkbox">
+                <input type="checkbox" id="filter-for-mom" class="filter-input">
+                <span class="filter-label">Для мами</span>
+            </label>
+            <label class="filter-checkbox">
+                <input type="checkbox" id="filter-is-available" class="filter-input">
+                <span class="filter-label">Доступні для продажу</span>
+            </label>
+        </div>
+    </div>
+{% endif %}
+   
+<div class="content">
+
+    {% if products %}
+        {% for product in products %}
+            {% if product.id and product.category %}
+                <a href="{% url 'product_detail' product.category.id product.id %}" 
+                   class="content_item product-item"
+                   data-for-dad="{% if product.for_dad %}true{% else %}false{% endif %}"
+                   data-for-mom="{% if product.for_mom %}true{% else %}false{% endif %}"
+                   data-is-available="{% if product.is_available %}true{% else %}false{% endif %}">
+                    {% if product.image %}
+                    <img class="content_img" src="{{ product.image.url|default:'/static/images/default.png' }}" alt="{{ product.name }}">
+                    {% endif %}
+                    <div class="overlay_text">{{ product.name }}</div>
+                </a>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+</div>
+
+</div>
+
+
+{% endblock %}
+

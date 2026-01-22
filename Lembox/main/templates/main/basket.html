@@ -1,0 +1,247 @@
+{% extends 'main/dad.html' %}
+{% load static %}
+
+{% block body %}
+<div class="basket-container">
+    <div class="basket-header">
+        <h2>Кошик покупок</h2>
+        {% if basket_count %}
+            <p class="basket-count">Товарів у кошику: {{ basket_count }}</p>
+        {% endif %}
+    </div>
+
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if is_empty %}
+        <div class="empty-basket">
+            <p>Ваш кошик порожній</p>
+        </div>
+    {% else %}
+        <div class="basket-items">
+            {% for item in basket_items %}
+                <div class="basket-item">
+
+                    <label for="checkbox_product_{{ item.id }}" class="checkbox-label">
+                        <input type="checkbox" 
+                               id="checkbox_product_{{ item.id }}" 
+                               name="selected_products" 
+                               value="{{ item.id }}" 
+                               class="product-checkbox"
+                               checked>
+                    </label>
+
+                    <div class="item-image">
+                        {% if item.image %}
+                            <img src="{{ item.image }}" alt="{{ item.name }}">
+                        {% else %}
+                            <div class="no-image">Немає фото</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="item-info">
+                        <h3 class="item-name">{{ item.name }}</h3>
+                        <p class="item-price">Ціна: {{ item.price }} ₴</p>
+                    </div>
+                    
+                    <div class="item-quantity">
+                        <form method="POST" action="{% url 'basket' %}" class="quantity-form">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="update">
+                            <input type="hidden" name="product_id" value="{{ item.id }}">
+                            <label for="quantity-{{ item.id }}">Кількість:</label>
+                            <button type="button" class="item-quantity-qty-btn minus">−</button>
+                            <input type="number" 
+                                   id="quantity-{{ item.id }}" 
+                                   name="quantity" 
+                                   value="{{ item.quantity }}" 
+                                   min="1" 
+                                   class="quantity-input">
+                            <button type="button" class="qty-btn plus">+</button>
+                            <button type="submit" class="item-quantity-btn-update">Оновити</button>
+                        </form>
+                    </div>
+                    
+                    <div class="item-total">
+                        <p class="item-total-price">Сума: {{ item.total|floatformat:2 }} ₴</p>
+                    </div>
+                    
+                    <div class="item-actions">
+                        <form method="POST" action="{% url 'basket' %}" class="remove-form">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="remove">
+                            <input type="hidden" name="product_id" value="{{ item.id }}">
+                            <button type="submit" class="btn-remove">Видалити</button>
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        
+        <div class="basket-summary">
+            <div class="summary-total">
+                <h3>Загальна сума: <span class="total-amount">{{ total|floatformat:2 }} ₴</span></h3>
+            </div>
+            <button class="to_buy_button">оформити</button>
+            <div class="order-form-section">
+                <h3>Оформлення замовлення</h3>
+                <form method="POST" action="{% url 'basket' %}" class="order-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="buy">
+                    {% if form %}
+                        <div class="form-group">
+                            <label for="id_name">Ваше ім'я:</label>
+                            {{ form.name }}
+                        </div>
+                        <div class="form-group">
+                            <label for="id_phone">Ваш Телефон:</label>
+                            {{ form.phone }}
+                        </div>
+                        <div class="form-group">
+                            <label for="id_email">Email:</label>
+                            {{ form.email }}
+                        </div>
+                        <div class="form-group">
+                            <label for="delivery_method">Спосіб доставки:</label>
+                            <select id="delivery_method" name="delivery_method" required class="delivery-method-input">
+                                <option value="" selected disabled>Оберіть спосіб доставки</option>
+                                <option value="novaposhta">Нова Пошта</option>
+                                <option value="ukrposhta">Укрпошта</option>
+                                <option value="self_pickup">Самовивіз</option>
+                            </select>
+                        </div>
+                        <div id="nova-poshta-fields" style="display: none;">
+                            <div class="form-group">
+                                <label for="id_address_nova_poshta">Адреса:</label>
+                                {{ form.address_nova_poshta }}
+                            </div>
+                            <div class="form-group">
+                                <label for="id_city_nova_poshta">Місто:</label>
+                                {{ form.city_nova_poshta }}
+                            </div>
+                        
+                            <div class="form-group">
+                                <label for="id_region_nova_poshta">Область:</label>
+                                {{ form.region_nova_poshta }}
+                            </div>
+                        
+                            <div class="form-group">
+                                <label for="id_branch_nova_poshta">Відділення:</label>
+                                {{ form.branch_nova_poshta }}
+                            </div>
+                        
+                        </div>
+
+                        <div id="uke-poshta-fields" style="display: none;">
+                            <div class="form-group">
+                                <label for="id_city_ukr_poshta">Місто:</label>
+                                {{ form.city_ukr_poshta }}
+                            </div>
+                        
+                            <div class="form-group">
+                                <label for="id_region_ukr_poshta">Область:</label>
+                                {{ form.region_ukr_poshta }}
+                            </div>
+                        
+                            <div class="form-group">
+                                <label for="id_inbex_ukr_poshta">Індекс:</label>
+                                {{ form.inbex_ukr_poshta }}
+                            </div>
+
+                            <div class="form-group">
+                                <label for="id_address_ukr_poshta">Адреса:</label>
+                                {{ form.address_ukr_poshta }}
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="form-group">
+                            <label for="customer_name">Ваше ім'я:</label>
+                            <input type="text" 
+                                   id="customer_name" 
+                                   name="customer_name" 
+                                   required 
+                                   placeholder="Введіть ваше ім'я"
+                                   class="customer-name-input">
+                        </div>
+                        <div class="form-group">
+                            <label for="customer_phone">Ваш Телефон:</label>
+                            <input type="tel" 
+                                   id="customer_phone" 
+                                   name="customer_phone" 
+                                   required 
+                                   placeholder="Введіть ваш телефон"
+                                   class="customer-phone-input">
+                        </div>
+                        <div class="form-group">
+                            <label for="delivery_method">Спосіб доставки:</label>
+                            <select id="delivery_method" name="delivery_method" required class="delivery-method-input">
+                                <option value="" selected disabled>Оберіть спосіб доставки</option>
+                                <option value="novaposhta">Нова Пошта</option>
+                                <option value="ukrposhta">Укрпошта</option>
+                                <option value="self_pickup">Самовивіз</option>
+                            </select>
+                        </div>
+                        <div id="nova-poshta-fields" style="display: none;">
+                            <div class="form-group">
+                                <label>Місто:</label>
+                                <input type="text" name="city" placeholder="Місто">
+                            </div>
+                        
+                            <div class="form-group">
+                                <label>Область:</label>
+                                <input type="text" name="region" placeholder="Область">
+                            </div>
+                        
+                            <div class="form-group">
+                                <label>Відділення:</label>
+                                <input type="number" name="branch" placeholder="№ відділення">
+                            </div>
+                        
+                        </div>
+
+                        <div id="uke-poshta-fields" style="display: none;">
+                            <div class="form-group">
+                                <label>Місто:</label>
+                                <input type="text" name="city" placeholder="Місто">
+                            </div>
+                        
+                            <div class="form-group">
+                                <label>Область:</label>
+                                <input type="text" name="region" placeholder="Область">
+                            </div>
+                        
+                            <div class="form-group">
+                                <label>Індекс:</label>
+                                <input type="number" name="branch" placeholder="Індекс">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Адреса:</label>
+                                <input type="text" name="address" placeholder="Адреса">
+                            </div>
+                        </div>
+                    {% endif %}
+                    
+                    <button type="submit" class="btn-buy">Купити</button>
+                </form>
+            </div>
+            
+            <div class="summary-actions">
+                <form method="POST" action="{% url 'basket' %}" class="clear-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="clear">
+                    <button type="submit" class="btn-clear" onclick="return confirm('Ви впевнені, що хочете очистити кошик?')">Очистити кошик</button>
+                </form>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends 'main/dad.html' %}
+{% block body %}
+<div>
+<div class="category_content">
+
+{% for category in categories %}
+    {% if category.id %}
+            <a href="{% url 'category_detail' category.id %}" class="content_item">
+                    {% if  category.image  %}
+                <img class="content_img" src="{{ category.image.url }}" alt="{{ category.name }}">
+                    {%endif%}
+                <div class="overlay_text">{{ category.name }}</div>
+            </a>
+    {% endif %}
+{% endfor %}
+</div>
+
+</div>
+
+
+{% endblock %}

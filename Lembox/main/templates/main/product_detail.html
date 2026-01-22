@@ -1,0 +1,122 @@
+{% extends 'main/dad.html' %}
+{% load static %}
+
+{% block body %}
+<a class="text_edit" href=" {% url 'product_detail_edit' product.id%}">редагувати</a>
+<div class="product-detail">
+
+<!-- #### --><!-- #### --><!-- #### --><!-- #### --><!-- #### --><!-- #### --><!-- #### -->
+<div class="">
+  <div class="swiper product-images" style="width: 600px; height: 700px;">
+    <div class="swiper-wrapper">
+      
+      {% if product.image %}
+      <div class="swiper-slide">
+        <img class="product-detail-img" src="{{ product.image.url }}" alt="{{ product.name }}">
+      </div>
+      {% endif %}
+
+      {% if product.image_1 %}
+      <div class="swiper-slide">
+        <img class="product-detail-img" src="{{ product.image_1.url }}" alt="{{ product.name }}_1">
+      </div>
+      {% endif %}
+
+      {% if product.image_2 %}
+      <div class="swiper-slide">
+        <img class="product-detail-img" src="{{ product.image_2.url }}" alt="{{ product.name }}_2">
+      </div>
+      {% endif %}
+
+      </div>
+
+    <div class="swiper-button-next"></div>
+    <div class="swiper-button-prev"></div>
+    <div class="swiper-pagination"></div>
+  </div>
+
+</div>
+<!-- #### --><!-- #### --><!-- #### --><!-- #### --><!-- #### --><!-- #### --><!-- #### -->
+  
+  <div class="product-info">
+    {% if product.name %}
+    <h3 class="product-detail-name">{{ product.name }}</h3>
+    {% endif %}
+    
+    {% if product.description %}
+    <div class="product-description">
+      <p>{{ product.description|linebreaks }}</p>
+    </div>
+    {% endif %}
+    
+    {% if product.price %}
+    <div class="product-price-section">
+      <h2 class="price">{{ product.price }} ₴</h2>
+    </div>
+    {% endif %}
+    
+    <div class="add-to-basket-section">
+      <form method="POST" action="{% url 'basket' %}" class="add-to-basket-form">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="add">
+        <input type="hidden" name="product_id" value="{{ product.id }}">
+        
+        <div class="quantity-selector">
+          <label for="quantity">Кількість:</label>
+          <button type="button" class="qty-btn minus">−</button>
+          <input type="number" 
+                class="number_input"
+                 id="quantity" 
+                 name="quantity" 
+                 value="1" 
+                 min="1" 
+                 class="quantity-input">
+          <button type="button" class="qty-btn plus">+</button>
+        </div>
+        
+        <button type="submit" class="btn-add-to-basket">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16" style="margin-right: 8px;">
+            <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l1.22 6.479a.5.5 0 0 0 .497.421h6.362a.5.5 0 0 0 .496-.421L13.39 4H3.102zM5 14a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+          </svg>
+          Додати до кошика
+        </button>
+      </form>
+    </div>
+    
+
+    
+  </div>
+
+</div>
+<h3 class="text_reviews">Відгуки</h3>
+<button type="button" class="comment_write_button">
+  написати комент
+</button>
+<div class="comment_all">
+  <div class="comment_write">
+    <div class="comment_box">
+        <form id="commentForm"
+              data-product-id="{{ product.id }}"
+              data-csrf="{{ csrf_token }}"
+              data-url="{% url 'add_comment' %}">
+            <textarea name="text" id="commentText" class="comment_text_send"></textarea><br>
+            <button type="submit" class="comment_button_send">Відправити</button>
+        </form>
+    </div>
+</div>
+
+  <div class="comment_info" >
+
+  <div id="commentsContainer">
+    {% for comment in comments %}
+      <div class="comment_text">
+        {{ comment.user.username }}: {{ comment.text }} 
+        <a href = "{% url 'comment_remove' comment.id%}"> видалити </a>
+
+      </div>
+    {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}
+
