@@ -3,7 +3,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 from django.forms import ModelChoiceField, ModelForm, RadioSelect
-from .models import Save_user_data, Product
+from .models import Save_user_data, Product, To_Buy_Product, To_Buy
 
 
 
@@ -86,7 +86,113 @@ class Product_form(forms.ModelForm):
             'name': forms.TextInput(attrs={'class': 'my_st_number', 'placeholder': 'Ім’я', 'required': True}),
             'description': forms.Textarea(attrs={'class': 'my_st_number', 'placeholder': 'Опис'}),
             'price': forms.TextInput(attrs={'class': 'my_st_number', 'placeholder': 'Ціна'}),
-            'for_dad': forms.CheckboxInput(attrs={'class': 'my_st_number'}),
-            'for_mom': forms.CheckboxInput(attrs={'class': 'my_st_number'}),
-            'is_available': forms.CheckboxInput(attrs={'class': 'my_st_number'}),
+            'for_dad': forms.CheckboxInput(attrs={'class': 'my_st_number'}, check_test=lambda value: False),
+            'for_mom': forms.CheckboxInput(attrs={'class': 'my_st_number'}, check_test=lambda value: False),
+            'is_available': forms.CheckboxInput(attrs={'class': 'my_st_number'}, check_test=lambda value: True),
         }
+class ToBuyProductForm(forms.ModelForm):
+    class Meta:
+        model = To_Buy_Product
+        fields = (
+            "product",
+            "number",
+
+            "name_user",
+            "phone",
+            "email",
+
+            # Nova Poshta
+            "address_nova_poshta",
+            "city_nova_poshta",
+            "region_nova_poshta",
+            "branch_nova_poshta",
+
+            # Ukrposhta
+            "address_ukr_poshta",
+            "city_ukr_poshta",
+            "region_ukr_poshta",
+            "inbex_ukr_poshta",
+        )
+
+        widgets = {
+            "product": forms.Select(attrs={"class": "my_st_number"}),
+            "number": forms.NumberInput(attrs={"class": "my_st_number", "min": 1}),
+
+            "name_user": forms.TextInput(attrs={"class": "my_st_number"}),
+            "phone": forms.TextInput(attrs={"class": "my_st_number"}),
+            "email": forms.EmailInput(attrs={"class": "my_st_number"}),
+
+            "address_nova_poshta": forms.TextInput(attrs={"class": "my_st_number"}),
+            "city_nova_poshta": forms.TextInput(attrs={"class": "my_st_number"}),
+            "region_nova_poshta": forms.TextInput(attrs={"class": "my_st_number"}),
+            "branch_nova_poshta": forms.TextInput(attrs={"class": "my_st_number"}),
+
+            "address_ukr_poshta": forms.TextInput(attrs={"class": "my_st_number"}),
+            "city_ukr_poshta": forms.TextInput(attrs={"class": "my_st_number"}),
+            "region_ukr_poshta": forms.TextInput(attrs={"class": "my_st_number"}),
+            "inbex_ukr_poshta": forms.TextInput(attrs={"class": "my_st_number"}),
+        }
+
+class ToBuyForm(forms.ModelForm):
+    class Meta:
+        model = To_Buy
+        fields = (
+            "name",
+            "name_user",
+            "phone",
+            "email",
+
+            # Nova Poshta
+            "address_nova_poshta",
+            "city_nova_poshta",
+            "region_nova_poshta",
+            "branch_nova_poshta",
+
+            # Ukrposhta
+            "address_ukr_poshta",
+            "city_ukr_poshta",
+            "region_ukr_poshta",
+            "inbex_ukr_poshta",
+
+            "total_price",
+        )
+
+        widgets = {
+            "name": forms.TextInput(attrs={"class": "my_st_number"}),
+            "name_user": forms.TextInput(attrs={"class": "my_st_number", "placeholder": "Ваше імʼя"}),
+            "phone": forms.TextInput(attrs={"class": "my_st_number", "placeholder": "Телефон"}),
+            "email": forms.EmailInput(attrs={"class": "my_st_number"}),
+
+            "address_nova_poshta": forms.TextInput(attrs={"class": "my_st_number"}),
+            "city_nova_poshta": forms.TextInput(attrs={"class": "my_st_number"}),
+            "region_nova_poshta": forms.TextInput(attrs={"class": "my_st_number"}),
+            "branch_nova_poshta": forms.TextInput(attrs={"class": "my_st_number"}),
+
+            "address_ukr_poshta": forms.TextInput(attrs={"class": "my_st_number"}),
+            "city_ukr_poshta": forms.TextInput(attrs={"class": "my_st_number"}),
+            "region_ukr_poshta": forms.TextInput(attrs={"class": "my_st_number"}),
+            "inbex_ukr_poshta": forms.TextInput(attrs={"class": "my_st_number"}),
+
+            "total_price": forms.NumberInput(attrs={"class": "my_st_number", "readonly": True}),
+        }
+
+
+class OrderForm(forms.ModelForm):
+    DELIVERY_CHOICES = (
+        ('novaposhta', 'Нова Пошта'),
+        ('ukrposhta', 'Укрпошта'),
+        ('self_pickup', 'Самовивіз'),
+    )
+
+    delivery_method = forms.ChoiceField(
+        choices=DELIVERY_CHOICES,
+        required=True
+    )
+
+    class Meta:
+        model = Save_user_data
+        fields = [
+            'name', 'phone', 'email',
+            'address_nova_poshta', 'city_nova_poshta', 'region_nova_poshta', 'branch_nova_poshta',
+            'address_ukr_poshta', 'city_ukr_poshta', 'region_ukr_poshta', 'inbex_ukr_poshta',
+        ]

@@ -1,9 +1,9 @@
 {% extends 'main/dad.html'%}
 
 {%block body%}
-<div class="blurred center3">
+<div class="office_content">
     {% csrf_token %}
-    <div>
+    <div class="my_orders">
         <h3>мої замовлення</h3>
 
         {% if to_buy_list %}
@@ -28,7 +28,7 @@
         {% endif %}
        
     </div>
-    <div class="order-form-section">
+    <div class="order-form-section_office">
         <h3>дані для доставки</h3>
         <form method="POST" class="order-form">
             

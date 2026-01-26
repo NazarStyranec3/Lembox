@@ -95,7 +95,6 @@
                 <form method="POST" action="{% url 'basket' %}" class="order-form">
                     {% csrf_token %}
                     <input type="hidden" name="action" value="buy">
-                    {% if form %}
                         <div class="form-group">
                             <label for="id_name">Ваше ім'я:</label>
                             {{ form.name }}
@@ -160,74 +159,6 @@
                                 {{ form.address_ukr_poshta }}
                             </div>
                         </div>
-                    {% else %}
-                        <div class="form-group">
-                            <label for="customer_name">Ваше ім'я:</label>
-                            <input type="text" 
-                                   id="customer_name" 
-                                   name="customer_name" 
-                                   required 
-                                   placeholder="Введіть ваше ім'я"
-                                   class="customer-name-input">
-                        </div>
-                        <div class="form-group">
-                            <label for="customer_phone">Ваш Телефон:</label>
-                            <input type="tel" 
-                                   id="customer_phone" 
-                                   name="customer_phone" 
-                                   required 
-                                   placeholder="Введіть ваш телефон"
-                                   class="customer-phone-input">
-                        </div>
-                        <div class="form-group">
-                            <label for="delivery_method">Спосіб доставки:</label>
-                            <select id="delivery_method" name="delivery_method" required class="delivery-method-input">
-                                <option value="" selected disabled>Оберіть спосіб доставки</option>
-                                <option value="novaposhta">Нова Пошта</option>
-                                <option value="ukrposhta">Укрпошта</option>
-                                <option value="self_pickup">Самовивіз</option>
-                            </select>
-                        </div>
-                        <div id="nova-poshta-fields" style="display: none;">
-                            <div class="form-group">
-                                <label>Місто:</label>
-                                <input type="text" name="city" placeholder="Місто">
-                            </div>
-                        
-                            <div class="form-group">
-                                <label>Область:</label>
-                                <input type="text" name="region" placeholder="Область">
-                            </div>
-                        
-                            <div class="form-group">
-                                <label>Відділення:</label>
-                                <input type="number" name="branch" placeholder="№ відділення">
-                            </div>
-                        
-                        </div>
-
-                        <div id="uke-poshta-fields" style="display: none;">
-                            <div class="form-group">
-                                <label>Місто:</label>
-                                <input type="text" name="city" placeholder="Місто">
-                            </div>
-                        
-                            <div class="form-group">
-                                <label>Область:</label>
-                                <input type="text" name="region" placeholder="Область">
-                            </div>
-                        
-                            <div class="form-group">
-                                <label>Індекс:</label>
-                                <input type="number" name="branch" placeholder="Індекс">
-                            </div>
-
-                            <div class="form-group">
-                                <label>Адреса:</label>
-                                <input type="text" name="address" placeholder="Адреса">
-                            </div>
-                        </div>
-                    {% endif %}
                     
                     <button type="submit" class="btn-buy">Купити</button>
                 </form>

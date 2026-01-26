@@ -5,10 +5,10 @@ from .models import Category, Product, To_Buy, To_Buy_Product,Save_user_data, Co
 from decimal import Decimal
 from django.db import IntegrityError
 from django.contrib.auth.decorators import login_required
-from .forms import Save_user_data_form, Product_form
+from .forms import Save_user_data_form, Product_form, ToBuyForm, Save_user_data_form
 from django.contrib.auth import login, logout
 from django.contrib.auth.forms import AuthenticationForm
-from .forms import CustomUserCreationForm, CustomLoginForm
+from .forms import CustomUserCreationForm, CustomLoginForm, ToBuyForm
 from django.contrib.auth.models import User
 import json
 # Create your views here.
@@ -151,7 +151,7 @@ def basket(request):
     - Видалення товарів (POST з action='remove')
     - Очищення кошика (POST з action='clear')
     """
-    
+    form = None
     # Ініціалізація кошика в сесії, якщо його ще немає
     if 'basket' not in request.session:
         request.session['basket'] = {}
@@ -202,19 +202,23 @@ def basket(request):
 
         
         elif action == 'buy':
+
             # Створення замовлення
             # Отримуємо ім'я з форми або з окремого поля
             # Одержуємо ім'я користувача (запасний варіант)
-            customer_name = request.POST.get('name', '').strip() or request.POST.get('customer_name', '').strip()
-
-            # Отримуємо або створюємо профіль користувача для збереження форми доставки
-            user_data, created = Save_user_data.objects.get_or_create(user=request.user)
-            form = Save_user_data_form(request.POST or None, instance=user_data)
+            if request.user.is_authenticated:
+                customer_name = request.POST.get('name', '').strip() or request.POST.get('customer_name', '').strip()
+                # Отримуємо або створюємо профіль користувача для збереження форми доставки
+                user_data, created = Save_user_data.objects.get_or_create(user=request.user)
+                form = Save_user_data_form(request.POST or None, instance=user_data)
+            else :
+                form = ToBuyForm(request.POST)
             if form.is_valid():
+                if request.user.is_authenticated:
                 # Оновлюємо дані користувача в профілі
-                instance = form.save(commit=False)
-                instance.user = request.user
-                instance.save()
+                    instance = form.save(commit=False)
+                    instance.user = request.user
+                    instance.save()
                 # Далі створюємо сам "To_Buy" (замовлення)
                 from decimal import Decimal
                 from .models import To_Buy, To_Buy_Product, Product
@@ -254,8 +258,28 @@ def basket(request):
                             region_ukr_poshta = form.cleaned_data.get('region_ukr_poshta')
                             inbex_ukr_poshta = form.cleaned_data.get('inbex_ukr_poshta')
                             # Самовивіз — очищаємо обидві групи
-                        to_buy = To_Buy.objects.create(
-                                name=customer_name if customer_name else instance.name,
+                        if request.user.is_authenticated:    
+                            to_buy = To_Buy.objects.create(
+                                    
+                                    name=customer_name if customer_name else instance.name,
+                                    total_price=total,
+
+                                    name_user = form.cleaned_data.get('name'),
+                                    phone = form.cleaned_data.get('phone'),
+                                    email = form.cleaned_data.get('email'),
+                                    address_nova_poshta = address_nova_poshta,
+                                    city_nova_poshta = city_nova_poshta,
+                                    region_nova_poshta = region_nova_poshta,
+                                    branch_nova_poshta = branch_nova_poshta,
+                                    # Ukrposhta
+                                    address_ukr_poshta = address_ukr_poshta,
+                                    city_ukr_poshta = city_ukr_poshta,
+                                    region_ukr_poshta = region_ukr_poshta,
+                                    inbex_ukr_poshta = inbex_ukr_poshta,
+                                )
+                        else:
+
+                            to_buy = To_Buy.objects.create(
                                 total_price=total,
 
                                 name_user = form.cleaned_data.get('name'),
@@ -271,8 +295,6 @@ def basket(request):
                                 region_ukr_poshta = region_ukr_poshta,
                                 inbex_ukr_poshta = inbex_ukr_poshta,
                             )
-                        
-
                     for product_id in selected_products:
                         product_id_str = str(product_id)
 
@@ -325,10 +347,33 @@ def basket(request):
                                 region_ukr_poshta = form.cleaned_data.get('region_ukr_poshta')
                                 inbex_ukr_poshta = form.cleaned_data.get('inbex_ukr_poshta')
                             # Самовивіз — очищаємо обидві групи
+                            if request.user.is_authenticated:
+                                To_Buy_Product.objects.create(
+                                    user=request.user,
+                                    data_user=instance,
+                                    to_buy=to_buy,
+                                    product = item['product'],
+                                    name=item['product'].name,
+                                    price=str(item['price']),
+                                    number=item['quantity'],
+                                    status=True,
+                                    name_user = form.cleaned_data.get('name'),
+                                    phone = form.cleaned_data.get('phone'),
+                                    email = form.cleaned_data.get('email'),
+                                    # Nova Poshta
+                                    address_nova_poshta = address_nova_poshta,
+                                    city_nova_poshta = city_nova_poshta,
+                                    region_nova_poshta = region_nova_poshta,
+                                    branch_nova_poshta = branch_nova_poshta,
+                                    # Ukrposhta
+                                    address_ukr_poshta = address_ukr_poshta,
+                                    city_ukr_poshta = city_ukr_poshta,
+                                    region_ukr_poshta = region_ukr_poshta,
+                                    inbex_ukr_poshta = inbex_ukr_poshta,
+                                )
+                            else:
+                                To_Buy_Product.objects.create(
 
-                            To_Buy_Product.objects.create(
-                                user=request.user,
-                                data_user=instance,
                                 to_buy=to_buy,
                                 name=item['product'].name,
                                 price=str(item['price']),
@@ -354,11 +399,13 @@ def basket(request):
                         request.session['basket'] = basket
                         request.session.modified = True
                         messages.success(request, "Замовлення успішно створено!")
-                        return redirect('office')
+                        return redirect('home')
             else:
                 # Не валідна форма - повертаємо форму для повторного введення
                 messages.error(request, "Будь ласка, перевірте свої дані для доставки.")
-    
+
+            
+
 
         if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
             basket_items, total = _get_basket_items(basket)
@@ -381,7 +428,8 @@ def basket(request):
     if request.user.is_authenticated:
         user_data, created = Save_user_data.objects.get_or_create(user=request.user)
         form = Save_user_data_form(instance=user_data)
-    
+    else:
+        form = ToBuyForm(request.POST)
     return render(request, 'main/basket.html', {
         'basket_items': basket_items,
         'total': total,
@@ -435,7 +483,7 @@ def category_detail(request, category_id):
 
     product_list = Product.objects.filter(category=category)
 
-    paginator = Paginator(product_list, 10)  # 🔥 10 товарів на сторінку
+    paginator = Paginator(product_list, 10)  
     page_number = request.GET.get('page')
     products = paginator.get_page(page_number)
 
