@@ -577,6 +577,7 @@ main {
     inset: 0;
     background: rgba(0, 0, 0, 0.27);
     z-index: 9999;
+    
 }
 
 .comment_box {
@@ -586,34 +587,52 @@ main {
     transform: translate(-50%, -50%); /* ⬅ центр */
 
     width: 100%;
-    max-width: 520px;
+    max-width: 620px;
+    height: 300px;
     border-radius: 12px;
     padding: 20px;
-    background: rgba(0, 0, 0, 0.27);
+    background: rgba(0, 0, 0, 0.833);
     box-shadow: 0 0 1rem 0 rgba(0, 0, 0, .2);	
     color: #ffffff;
     text-align: center;
+    background-image: url('/media/img/4.jpg');
+    
 }
 .comment_write_button{
     background: #fff;
     border-radius: 12px;
-    padding: 20px;
-    background: rgba(0, 0, 0, 0.27);
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.616);
+    box-shadow: 0 0 1rem 0 rgba(0, 0, 0, .2);	
+    color: #ffffff; 
+    margin: 10px;
+
+}
+.text_not_coment{
+    background: #fff;
+    border-radius: 12px;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.616);
     box-shadow: 0 0 1rem 0 rgba(0, 0, 0, .2);	
     color: #ffffff;
+    margin: 30px;
 }
 .comment_button_send{
     border-radius: 12px;
     padding: 20px;
-    background: rgba(208, 208, 208, 0.27);
+    background: rgba(0, 0, 0, 0.653);
     box-shadow:none;	
     color: #ffffff;
 }
-.comment_text_send{    border-radius: 12px;
+.comment_text_send{    
+    border-radius: 10px;
     padding: 20px;
-    background: rgba(208, 208, 208, 0.27);
+    background: rgba(0, 0, 0, 0.807);
     box-shadow:none;	
-    color: #ffffff;}
+    color: #ffffff;
+    width: 300px;
+    height: 150px;
+}
 
 .commentsContainer{
     display: flex;
@@ -624,7 +643,7 @@ main {
 .comment_text {
     width: 100%;
     max-width: 520px;
-    background: rgba(0, 0, 0, 0.27);
+    background: rgba(0, 0, 0, 0.675);
     box-shadow: 0 0 1rem 0 rgba(0, 0, 0, .2);	
     color: #ffffff;
     border-radius: 12px;
@@ -784,13 +803,21 @@ main {
     flex-direction: column;
     gap: 18px;
     padding: 30px 90px 30px 80px;
-    background-color: rgb(102, 102, 102);
     margin: 30px;
     border-radius: 30px;
     width: fit-content;
     max-width: 70%;
     font-size: 1.5rem;
     position: relative;
+    background-image: url('/media/img/4.jpg');
+    width: 1000px;
+    align-items: center;
+}
+
+.admin_all_info{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .button_all {
@@ -1038,8 +1065,10 @@ main {
     margin-top: 10px;
     padding: 12px;
     border-radius: 10px;
-    background: #f5f7fa;
-    border: 1px solid #dcdcdc;
+    background: rgba(0, 0, 0, 0.27);
+    box-shadow: 0 0 1rem 0 rgba(0, 0, 0, .2);
+    color: #ffffff;
+    
 }
 
 .toggle-btn {

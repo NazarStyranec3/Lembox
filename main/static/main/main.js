@@ -289,26 +289,28 @@ document.addEventListener("DOMContentLoaded", function () {
     async function loadComments() {
         const res = await fetch(`/comments/${productId}/`);
         const data = await res.json();
-
+    
         container.innerHTML = '';
+    
         data.comments.forEach(c => {
             const div = document.createElement('div');
             div.classList.add('comment_text');
-        
+    
             const text = document.createElement('span');
             text.textContent = `${c.user}: ${c.text}`;
-        
-            const del = document.createElement('a');
-            del.href = `/comment_remove/${c.id}/`;
-            del.textContent = 'видалити';
-            del.classList.add('comment_delete');    
-        
             div.appendChild(text);
-            div.appendChild(del);
-            container.appendChild(div);
+    
+            if (data.is_admin) {
+                const del = document.createElement('a');
+                del.href = `/comment_remove/${c.id}/`;
+                del.textContent = ' видалити';
+                del.classList.add('comment_delete');
+                div.appendChild(del);
+            }
+    
+            container.appendChild(div); // ← ЗАВЖДИ додаємо
         });
-        
-    }
+    }    
 
     // 📤 Відправка коментаря
     form.addEventListener('submit', async function (e) {

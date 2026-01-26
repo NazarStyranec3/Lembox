@@ -11,6 +11,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from .forms import CustomUserCreationForm, CustomLoginForm, ToBuyForm
 from django.contrib.auth.models import User
 import json
+from django.contrib.admin.views.decorators import staff_member_required
 # Create your views here.
 def home(request):
     categories = Category.objects.filter(parent=None)
@@ -24,13 +25,16 @@ from django.contrib import messages
 def admin_panel(request):
     to_buy_products = To_Buy_Product.objects.all()
     to_buy = To_Buy.objects.all()
-    error = ''
-
+    
+    paginator = Paginator(to_buy, 10)  
+    page_number = request.GET.get('page')
+    products = paginator.get_page(page_number)
     return render(request, 'main/admin_panel.html', {
         'to_buy_products': to_buy_products,
-        'to_buy': to_buy,
+        'to_buy': products,
 
     })
+    
 def admin_product(request):
     error = ''
     products = Product.objects.all()
@@ -83,9 +87,11 @@ def product_detail_remove(request, product_id):
     product.delete()
     return redirect('home')
 
+
+
+@staff_member_required
 def comment_remove(request, comment_id):
     comment = get_object_or_404(Comment, id=comment_id)
-
     comment.delete()
     return redirect(request.META.get('HTTP_REFERER', '/'))
 
@@ -128,19 +134,21 @@ def add_comment(request):
     return JsonResponse({'success': False, 'error': 'Invalid request'}, status=400)
 
 def get_comments(request, product_id):
-    comments = Comment.objects.filter(
-        product_id=product_id
-    ).order_by('created_at')
+    comments = Comment.objects.filter(product_id=product_id).order_by('created_at')
 
     data = []
     for c in comments:
         data.append({
-            'id': c.id,                     # ← ОБОВʼЯЗКОВО
+            'id': c.id,
             'user': c.user.username,
             'text': c.text,
         })
 
-    return JsonResponse({'comments': data})
+    return JsonResponse({
+        'comments': data,
+        'is_admin': request.user.is_superuser
+    })
+
 
 def basket(request):
     """

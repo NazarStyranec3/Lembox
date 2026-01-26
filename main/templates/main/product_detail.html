@@ -2,7 +2,9 @@
 {% load static %}
 
 {% block body %}
+{% if request.user.is_superuser %}
 <a class="text_edit" href=" {% url 'product_detail_edit' product.id%}">редагувати</a>
+{%endif%}
 <div class="product-detail">
 
 <!-- #### --><!-- #### --><!-- #### --><!-- #### --><!-- #### --><!-- #### --><!-- #### -->
@@ -88,20 +90,27 @@
   </div>
 
 </div>
-<h3 class="text_reviews">Відгуки</h3>
+<h3 class="text_reviews">Відгуки
 <button type="button" class="comment_write_button">
   написати комент
-</button>
+</button></h3>
 <div class="comment_all">
   <div class="comment_write">
     <div class="comment_box">
-        <form id="commentForm"
-              data-product-id="{{ product.id }}"
-              data-csrf="{{ csrf_token }}"
-              data-url="{% url 'add_comment' %}">
-            <textarea name="text" id="commentText" class="comment_text_send"></textarea><br>
-            <button type="submit" class="comment_button_send">Відправити</button>
-        </form>
+      {% if user.is_authenticated %}
+      <form id="commentForm"
+      data-product-id="{{ product.id }}"
+      data-csrf="{{ csrf_token }}"
+      data-url="{% url 'add_comment' %}">
+        <textarea name="text" id="commentText" class="comment_text_send"></textarea><br>
+        <button type="submit" class="comment_button_send">Відправити</button>
+      </form>
+      {% else %}
+       <div class="text_not_coment">
+        не авторизовані користовачі не можуть писати комент
+       </div>
+      {% endif %}
+
     </div>
 </div>
 
@@ -111,7 +120,10 @@
     {% for comment in comments %}
       <div class="comment_text">
         {{ comment.user.username }}: {{ comment.text }} 
-        <a href = "{% url 'comment_remove' comment.id%}"> видалити </a>
+        {% if request.user.is_superuser %}
+          <a href="{% url 'comment_remove' comment.id %}"> видалити </a>
+        {% endif %}
+        
 
       </div>
     {% endfor %}

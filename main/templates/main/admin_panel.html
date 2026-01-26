@@ -21,52 +21,70 @@
                     </div>
                     
                 </div>
-                {% for to_buy_item in to_buy %}
-    <div class="admin_panel_info"
-        data-status="{% if to_buy_item.status %}open{% else %}close{% endif %}">
+    <div class="admin_all_info">
+        {% for to_buy_item in to_buy %}
+        <div class="admin_panel_info"
+            data-status="{% if to_buy_item.status %}open{% else %}close{% endif %}">
 
-        <div class="alert-info">
-            <strong>Замовлення №{{ to_buy_item.id }}</strong><br>
-            {{ to_buy_item }}<br>
+            <div class="alert-info">
+                <strong>Замовлення №{{ to_buy_item.id }}</strong><br>
+                {{ to_buy_item }}<br>
 
-            <button class="toggle-btn" onclick="toggleDetails(this)">
-                Показати деталі
-            </button>
+                <button class="toggle-btn" onclick="toggleDetails(this)">
+                    Показати деталі
+                </button>
 
-            <div class="dont_see_it">
-                Назва : {{ to_buy_item.name }}<br>
-                status : {{ to_buy_item.status }}<br>
-                phone : {{ to_buy_item.phone }}<br>
-                email : {{ to_buy_item.email }}<br>
-                total_price : {{ to_buy_item.total_price }}<br>
-                created_at : {{ to_buy_item.created_at }}<br>
+                <div class="dont_see_it">
+                    Назва : {{ to_buy_item.name }}<br>
+                    phone : {{ to_buy_item.phone }}<br>
+                    email : {{ to_buy_item.email }}<br>
+                    total_price : {{ to_buy_item.total_price }}<br>
+                    created_at : {{ to_buy_item.created_at }}<br>
+                </div>
             </div>
+
+            {% for to_buy_product in to_buy_products %}
+                {% if to_buy_product.to_buy.id == to_buy_item.id %}
+                <div>
+                    назва - {{ to_buy_product.name }}<br>
+                    кількість - {{ to_buy_product.number }}<br>
+                    ціна - {{ to_buy_product.price }}<br>
+                </div>
+                {% endif %}
+            {% endfor %}
+
+            <div class="button_all">
+                <button class="delete_button">Видалити</button>
+                <button class="close_button"
+                        onclick="closeOrder(this)"
+                        data-order-id="{{ to_buy_item.id }}">
+                    Закрити замовлення
+                </button>
+            </div>
+
         </div>
-
-        {% for to_buy_product in to_buy_products %}
-            {% if to_buy_product.to_buy.id == to_buy_item.id %}
-            <div>
-                назва - {{ to_buy_product.name }}<br>
-                кількість - {{ to_buy_product.number }}<br>
-                ціна - {{ to_buy_product.price }}<br>
-            </div>
+        {% endfor %}
+    </div>
+    <div class="pagination">
+        {% if to_buy.has_previous %}
+            <a href="?page={{ products.previous_page_number }}" class="page-btn">←</a>
+        {% endif %}
+    
+        {% for num in to_buy.paginator.page_range %}
+            {% if to_buy.number == num %}
+                <span class="page-btn-active">{{ num }}</span>
+            {% else %}
+                <a href="?page={{ num }}" class="page-btn">{{ num }}</a>
             {% endif %}
         {% endfor %}
-
-        <div class="button_all">
-            <button class="delete_button">Видалити</button>
-            <button class="close_button"
-                    onclick="closeOrder(this)"
-                    data-order-id="{{ to_buy_item.id }}">
-                Закрити замовлення
-            </button>
-        </div>
-
-    </div>
-    {% endfor %}
-
-            </div>
+    
+        {% if to_buy.has_next %}
+            <a href="?page={{ to_buy.next_page_number }}" class="page-btn">→</a>
         {% endif %}
+    
+    </div>
+    </div>
+    {% endif %}
     </div>
 
 {% endblock %}
