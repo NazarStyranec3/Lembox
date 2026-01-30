@@ -40,6 +40,31 @@
                     email : {{ to_buy_item.email }}<br>
                     total_price : {{ to_buy_item.total_price }}<br>
                     created_at : {{ to_buy_item.created_at }}<br>
+                    {% if to_buy_item.address_nova_poshta %}
+                        адреса : {{ to_buy_item.address_nova_poshta }}<br>
+                    {% endif %}
+                    {% if to_buy_item.city_nova_poshta %}
+                        Місто : {{ to_buy_item.city_nova_poshta }}<br>
+                    {% endif %}
+                    {% if to_buy_item.region_nova_poshta %}
+                        облясть  : {{ to_buy_item.region_nova_poshta }}<br>
+                    {% endif %}
+                    {% if to_buy_item.branch_nova_poshta %}
+                        Відділення : {{ to_buy_item.branch_nova_poshta }}<br>
+                    {% endif %}
+                    
+                    {% if to_buy_item.address_ukr_poshta %}
+                        Назва : {{ to_buy_item.address_ukr_poshta }}<br>
+                    {% endif %}
+                    {% if to_buy_item.city_ukr_poshta %}
+                        Назва : {{ to_buy_item.city_ukr_poshta }}<br>
+                    {% endif %}
+                    {% if to_buy_item.region_ukr_poshta %}
+                        Назва : {{ to_buy_item.region_ukr_poshta }}<br>
+                    {% endif %}
+                    {% if to_buy_item.inbex_ukr_poshta %}
+                        Назва : {{ to_buy_item.inbex_ukr_poshta }}<br>
+                    {% endif %}
                 </div>
             </div>
 
