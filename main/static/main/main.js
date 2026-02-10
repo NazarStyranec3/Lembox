@@ -141,6 +141,34 @@ document.addEventListener("DOMContentLoaded", function () {
     // Запускаємо фільтрацію одразу при завантаженні, 
     // щоб товари не в наявності зникли миттєво
     filterProducts();
+
+    // Бургер-меню фільтрів (тільки на мобільному)
+    const filtersWrapper = document.getElementById('filters-wrapper');
+    const filtersBurger = document.getElementById('filters-burger');
+    const filtersOverlay = document.getElementById('filters-overlay');
+    const filtersClose = document.getElementById('filters-close');
+
+    if (filtersWrapper && filtersBurger) {
+        function openFilters() {
+            filtersWrapper.classList.add('filters-open');
+            if (filtersOverlay) filtersOverlay.setAttribute('aria-hidden', 'false');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeFilters() {
+            filtersWrapper.classList.remove('filters-open');
+            if (filtersOverlay) filtersOverlay.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = '';
+        }
+        filtersBurger.addEventListener('click', function () {
+            if (filtersWrapper.classList.contains('filters-open')) {
+                closeFilters();
+            } else {
+                openFilters();
+            }
+        });
+        if (filtersOverlay) filtersOverlay.addEventListener('click', closeFilters);
+        if (filtersClose) filtersClose.addEventListener('click', closeFilters);
+    }
 });
 
 
