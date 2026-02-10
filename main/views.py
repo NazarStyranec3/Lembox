@@ -488,7 +488,7 @@ def _get_basket_items(basket):
 def category_detail(request, category_id):
     category = get_object_or_404(Category, id=category_id)
     subcategories = category.children.all()
-
+    categories = Category.objects.filter(parent=None)
     product_list = Product.objects.filter(category=category)
 
     paginator = Paginator(product_list, 10)  
@@ -499,6 +499,7 @@ def category_detail(request, category_id):
         'category': category,
         'subcategories': subcategories,
         'products': products,
+        'categories': categories,
     })
 
 def hom(request):

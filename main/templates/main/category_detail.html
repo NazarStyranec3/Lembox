@@ -16,6 +16,14 @@
                 <span class="filter-label">Для мами</span>
             </label>
         </div>
+        <h3 class="filters-title">категорії:</h3>
+        <div class="filters-container">
+            {% for category in categories %}
+                <label class="filter-checkbox">
+                    <a href="{% url 'category_detail' category.id %}" class = 'filters-a-link'>{{category.name}}</a>
+                </label>
+            {% endfor %}
+        </div>
     </div>
     {% endif %}
    

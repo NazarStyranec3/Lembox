@@ -915,7 +915,15 @@ main {
     gap: 14px;
     width: 100%;
 }
-
+.filters-a-link{
+    text-decoration: none;
+    color: #2c3536;
+    font-size: 1.1rem;
+    cursor: pointer;
+}
+.filters-a-link:hover{
+    color: #395a50;
+}
 .filter-checkbox {
     display: flex;
     align-items: center;
